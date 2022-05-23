@@ -30,6 +30,7 @@ class _OrderPageState extends State<OrderPage> {
     initSeletedList();
   }
 
+  /* Initialize the medicine list from APIs */
   void initSeletedList() async {
     await _service.getMedicinList().then((value) => {
           setState(() {
@@ -40,6 +41,7 @@ class _OrderPageState extends State<OrderPage> {
         });
   }
 
+  /* If user confirm orders, then the local storage will be updated! */
   void confirmOrder() async {
     final SharedPreferences _prefs = await SharedPreferences.getInstance();
     var originalData =

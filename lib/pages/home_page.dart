@@ -39,9 +39,11 @@ class _HomePageState extends State<HomePage> {
         });
   }
 
+  /* Setup the local storage only one time when API has called at first time. */
   Future<List<PharmacyLocalData>> setupLocalStorage() async {
     final SharedPreferences _prefs = await SharedPreferences.getInstance();
     Service _service = Service();
+    // If local storage is not set up, this will be setup here!
     if (_prefs.getString('localData') == null) {
       var pharmList = await _service.readJsonData();
       for (var i = 0; i < pharmList.length; i++) {
@@ -60,6 +62,8 @@ class _HomePageState extends State<HomePage> {
     return result.map((e) => PharmacyLocalData.fromJson(e)).toList();
   }
 
+  /* This function is to get the closest pharmacy from the list of distances between of pharmacie's locations and user location.
+  If one has selected, it can't be selected anymore. */
   void getNearestPharmacy(List<PharmacyLocalData> data) async {
     for (var i = 0; i < data.length; i++) {
       var pharma = await _service.getPharmacyDetails(data[i].id);
@@ -67,8 +71,10 @@ class _HomePageState extends State<HomePage> {
       var lat = pharma.value.address!.latitude;
       var lon = pharma.value.address!.longitude;
       if (data[i].orderStatus == true) {
+        // If it already selected before, then it's distance will set max value among of them.
         distanceList.add(double.infinity);
       } else {
+        // If it is first time selecting, then it will be added distance list.
         distanceList.add(getDistanceFromLatLonInKm(lat, lon));
       }
     }
